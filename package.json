@@ -1,0 +1,27 @@
+{
+  "name": "kaboom-super-maris",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "prestart": ".\\node_modules\\.bin\\esbuild game.js --bundle --outfile=public/build.js",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mlorencs/kaboom-super-maris.git"
+  },
+  "author": "Maris Lorencs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mlorencs/kaboom-super-maris/issues"
+  },
+  "homepage": "https://github.com/mlorencs/kaboom-super-maris#readme",
+  "dependencies": {
+    "esbuild": "^0.15.7",
+    "express": "^4.17.1",
+    "kaboom": "^2000.2.9"
+  }
+}
