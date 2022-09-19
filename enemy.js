@@ -1,6 +1,7 @@
 // Constants
 
-const ENEMY_SPEED = 20;
+const ENEMY_SPEED = 30;
+const ENEMY_JUMP_FORCE = 380;
 
 /**
  * Function that controls the movement of an enemy.
@@ -75,7 +76,7 @@ const addEnemy = ({ x1, x2 }, y) => {
     sprite("enemy"),
     pos(position),
     area(),
-    body(),
+    body({ jumpForce: ENEMY_JUMP_FORCE }),
     "enemy",
     attributes(x1, x2),
   ]);
@@ -97,4 +98,16 @@ export const addEnemies = (enemies) => {
   }
 
   return enemiesArr;
+};
+
+/**
+ * Function that makes an enemy to jump
+ * in order to overcome mushroom obstacle.
+ *
+ * @param {GameObj} enemy - Object of the enemy
+ */
+export const enemyCollidesWithMushroom = (enemy) => {
+  if (enemy.isGrounded()) {
+    enemy.jump();
+  }
 };

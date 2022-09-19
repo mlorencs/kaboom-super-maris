@@ -14,7 +14,7 @@ import {
   playerCollidesWithTube,
 } from "./player";
 
-import { addEnemies } from "./enemy";
+import { addEnemies, enemyCollidesWithMushroom } from "./enemy";
 import { moveMushroom } from "./mushroom";
 
 // Initializing Kaboom with configuration
@@ -113,6 +113,10 @@ scene("gameStart", ({ level, score }) => {
   onUpdate(() => {
     for (const enemy of enemies) {
       const direction = enemy.getDirection();
+
+      enemy.onCollide("mushroom", (m) => {
+        enemyCollidesWithMushroom(enemy);
+      });
 
       switch (direction) {
         case "left":

@@ -154,6 +154,14 @@ export const playerHeadbutt = (levelObj, obj) => {
   }
 };
 
+/**
+ * Function that removes coin
+ * when player has collected it
+ * and increases score value.
+ *
+ * @param {GameObj} coin - Object of the coin
+ * @param {GameObj} score - Object of the score
+ */
 export const playerCollidesWithCoin = (coin, score) => {
   destroy(coin);
 
@@ -161,12 +169,39 @@ export const playerCollidesWithCoin = (coin, score) => {
   score.text = score.value;
 };
 
+/**
+ * Function that removes mushroom
+ * when player has collected it
+ * and changes player's size to big.
+ *
+ * @param {GameObj} mushroom - Object of the mushroom
+ * @param {GameObj} player - Object of the player
+ */
 export const playerCollidesWithMushroom = (mushroom, player) => {
   destroy(mushroom);
 
   player.biggify();
 };
 
+/**
+ * Function that controls the collision
+ * between the player and an enemy.
+ *
+ * If the player is on the ground,
+ * colliding with an enemy can result in
+ * Game Over, if player's size is small.
+ * If player's size is big, colliding with
+ * an enemy changes player's size back to
+ * small.
+ *
+ * If the player is in the air,
+ * colliding with an enemy results in
+ * enemy's removal from the level.
+ *
+ * @param {GameObj} enemy - Object of the enemy
+ * @param {GameObj} player - Object of the player
+ * @param {GameObj} score - Object of the score
+ */
 export const playerCollidesWithEnemy = (enemy, player, score) => {
   if (player.isGrounded()) {
     if (!player.getIsBig()) {
@@ -179,6 +214,13 @@ export const playerCollidesWithEnemy = (enemy, player, score) => {
   }
 };
 
+/**
+ * Function that takes the player
+ * to the next level.
+ *
+ * @param {number} level
+ * @param {GameObj} score - Object of the score
+ */
 export const playerCollidesWithTube = (level, score) => {
   onKeyPress("down", () => {
     go("gameStart", { level: level + 1, score: score.value });
