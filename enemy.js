@@ -66,7 +66,7 @@ function attributes(x1, x2) {
  * Helper function that adds an enemy.
  *
  * @param {Object} obj - starting and ending positions on the x axis
- * @param {*} y - position on the y axis
+ * @param {number} y - position on the y axis
  * @returns Object of an enemy
  */
 const addEnemy = ({ x1, x2 }, y) => {

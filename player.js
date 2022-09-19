@@ -1,3 +1,5 @@
+import { addMushroom, destroyMushroom } from "./mushroom";
+
 // Constants
 
 const PLAYER_NAME = "maris";
@@ -121,37 +123,54 @@ export const playerJump = (player) => {
 };
 
 /**
- * Helper function that spawns a surprise
- * and changes the surprise block to the
- * box block.
+ * Helper function that replaces
+ * a surprise block with a box block.
  *
  * @param {Level} levelObj - Object of the level
  * @param {GameObj} obj - Object that player headbutts into
- * @param {string} spriteTag
  */
-const spawnOnLevel = (levelObj, obj, spriteTag) => {
-  levelObj.spawn(spriteTag, obj.gridPos.sub(0, 1));
-
+const spawnBox = (levelObj, obj) => {
   destroy(obj);
 
   levelObj.spawn("X", obj.gridPos.sub(0, 0));
 };
 
 /**
- * Function that spawns a surprise
+ * Function that spawns a coin
  * when the player headbutts into
- * the surprise block.
+ * a surprise block.
  *
  * @param {Level} levelObj - Object of the level
  * @param {GameObj} obj - Object that player headbutts into
  */
-export const playerHeadbutt = (levelObj, obj) => {
-  if (obj.is("coin-surprise")) {
-    spawnOnLevel(levelObj, obj, "$");
-  }
-  if (obj.is("mushroom-surprise")) {
-    spawnOnLevel(levelObj, obj, "M");
-  }
+export const playerHeadbuttsCoinSurprise = (levelObj, obj) => {
+  levelObj.spawn("$", obj.gridPos.sub(0, 1));
+
+  spawnBox(levelObj, obj);
+};
+
+/**
+ * Function that spawns a mushroom
+ * when the player headbutts into
+ * a surprise block.
+ *
+ * @param {Level} levelObj - Object of the level
+ * @param {GameObj} obj - Object that player headbutts into
+ * @param {Object} mushrooms - Object that consists of mushrooms
+ * that are currently spawned in
+ * @returns Object that consists of mushrooms that are currently
+ * spawned in
+ */
+export const playerHeadbuttsMushroomSurprise = (levelObj, obj, mushrooms) => {
+  const { x, y } = obj.pos;
+
+  const mushroom = addMushroom(x, y);
+
+  mushrooms = { ...mushrooms, [mushroom._id]: mushroom };
+
+  spawnBox(levelObj, obj);
+
+  return mushrooms;
 };
 
 /**
@@ -177,10 +196,12 @@ export const playerCollidesWithCoin = (coin, score) => {
  * @param {GameObj} mushroom - Object of the mushroom
  * @param {GameObj} player - Object of the player
  */
-export const playerCollidesWithMushroom = (mushroom, player) => {
-  destroy(mushroom);
+export const playerCollidesWithMushroom = (mushroom, mushrooms, player) => {
+  mushrooms = destroyMushroom(mushroom, mushrooms);
 
   player.biggify();
+
+  return mushrooms;
 };
 
 /**

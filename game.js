@@ -7,15 +7,16 @@ import {
   playerMoveRight,
   playerMoveToLeft,
   playerJump,
-  playerHeadbutt,
   playerCollidesWithCoin,
   playerCollidesWithMushroom,
   playerCollidesWithEnemy,
   playerCollidesWithTube,
+  playerHeadbuttsMushroomSurprise,
+  playerHeadbuttsCoinSurprise,
 } from "./player";
 
+import { moveMushroom, destroyMushroom } from "./mushroom";
 import { addEnemies, enemyCollidesWithMushroom } from "./enemy";
-import { moveMushroom } from "./mushroom";
 
 // Initializing Kaboom with configuration
 
@@ -84,6 +85,10 @@ scene("gameStart", ({ level, score }) => {
 
   const player = addPlayer(10, 0);
 
+  // Mushroom
+
+  let mushrooms = {};
+
   // Enemies
 
   const enemies = addEnemies(maps[level - 1].enemies || []);
@@ -105,6 +110,10 @@ scene("gameStart", ({ level, score }) => {
   // Mushroom movement
 
   onUpdate("mushroom", (m) => {
+    m.onCollide("wall", (w) => {
+      mushrooms = destroyMushroom(m, mushrooms);
+    });
+
     moveMushroom(m);
   });
 
@@ -139,7 +148,12 @@ scene("gameStart", ({ level, score }) => {
   });
 
   player.onHeadbutt((obj) => {
-    playerHeadbutt(gameLevel, obj);
+    if (obj.is("coin-surprise")) {
+      playerHeadbuttsCoinSurprise(gameLevel, obj);
+    }
+    if (obj.is("mushroom-surprise")) {
+      mushrooms = playerHeadbuttsMushroomSurprise(gameLevel, obj, mushrooms);
+    }
   });
 
   player.onCollide("coin", (c) => {
@@ -147,7 +161,7 @@ scene("gameStart", ({ level, score }) => {
   });
 
   player.onCollide("mushroom", (m) => {
-    playerCollidesWithMushroom(m, player);
+    mushrooms = playerCollidesWithMushroom(m, mushrooms, player);
   });
 
   player.onCollide("enemy", (en) => {
