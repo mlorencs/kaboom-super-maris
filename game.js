@@ -7,12 +7,12 @@ import {
   playerMoveRight,
   playerMoveToLeft,
   playerJump,
+  playerHeadbuttsCoinSurprise,
+  playerHeadbuttsMushroomSurprise,
   playerCollidesWithCoin,
   playerCollidesWithMushroom,
   playerCollidesWithEnemy,
   playerCollidesWithTube,
-  playerHeadbuttsMushroomSurprise,
-  playerHeadbuttsCoinSurprise,
 } from "./player";
 
 import { moveMushroom, destroyMushroom } from "./mushroom";
@@ -49,9 +49,9 @@ loadSprite("steel", "block_steel_blue.png");
 // Sprites for characters
 
 loadSprite("maris", "character.png");
-loadSprite("enemy", "evil_mushroom_left.png");
+loadSprite("enemy", "evil_mushroom.png");
 
-loadSprite("enemy-alt", "evil_mushroom_blue_left.png");
+loadSprite("enemy-alt", "evil_mushroom_blue.png");
 
 // Sprites for score/level-ups
 
@@ -121,18 +121,16 @@ scene("gameStart", ({ level, score }) => {
 
   onUpdate(() => {
     for (const enemy of enemies) {
-      const direction = enemy.getDirection();
-
       enemy.onCollide("mushroom", (m) => {
         enemyCollidesWithMushroom(enemy);
       });
 
-      switch (direction) {
-        case "left":
+      switch (enemy.direction) {
+        case LEFT:
           enemy.moveLeft();
 
           break;
-        case "right":
+        case RIGHT:
           enemy.moveRight();
 
           break;

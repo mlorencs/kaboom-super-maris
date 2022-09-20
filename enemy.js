@@ -8,35 +8,25 @@ const ENEMY_JUMP_FORCE = 380;
  *
  * @param {number} x1 - starting position on the x axis
  * @param {number} x2 - ending position on the x axis
- * @returns Object which includes function
- * that returns enemy's direction, function that
- * moves enemy to the left, and function that
- * moves enemy to the right
+ * @returns Object which includes function that moves
+ * enemy to the left and function that moves enemy
+ * to the right
  */
 function attributes(x1, x2) {
-  let direction = "left";
-
-  /**
-   * Function that returns enemy's direction.
-   *
-   * @returns "left" | "right"
-   */
-  function getDirection() {
-    return direction;
-  }
-
   /**
    * Function that moves enemy to the left.
    */
   function moveLeft() {
     const { x } = this.pos;
 
-    direction = "left";
+    this.direction = LEFT;
 
     if (x > x2) {
       this.move(-ENEMY_SPEED, 0);
     } else {
-      direction = "right";
+      this.flipX(true);
+
+      this.direction = RIGHT;
     }
   }
 
@@ -46,17 +36,18 @@ function attributes(x1, x2) {
   function moveRight() {
     const { x } = this.pos;
 
-    direction = "right";
+    this.direction = RIGHT;
 
     if (x < x1) {
       this.move(ENEMY_SPEED, 0);
     } else {
-      direction = "left";
+      this.flipX(false);
+
+      this.direction = LEFT;
     }
   }
 
   return {
-    getDirection,
     moveLeft,
     moveRight,
   };
@@ -77,6 +68,9 @@ const addEnemy = ({ x1, x2 }, y) => {
     pos(position),
     area(),
     body({ jumpForce: ENEMY_JUMP_FORCE }),
+    {
+      direction: LEFT, // controls the direction of the enemy
+    },
     "enemy",
     attributes(x1, x2),
   ]);

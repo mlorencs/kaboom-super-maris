@@ -7,7 +7,7 @@ const MUSHROOM_SPEED = 30;
  *
  * @param {number} x - position on the x axis
  * @param {number} y - position on the y axis
- * @returns
+ * @returns Object of the mushroom
  */
 export const addMushroom = (x, y) => {
   const position = vec2(x, y - 1);

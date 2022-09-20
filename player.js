@@ -13,28 +13,16 @@ const POWERUP_TIME = 6;
  * Function that controls the size of the player.
  *
  * @returns Object which includes function
- * that returns state of the player,
- * function that changes the size of the player
- * to small, and function that changes
+ * that changes the size of the player
+ * to small and function that changes
  * the size of the player to big
  */
 function attributes() {
-  let isBig = false;
-
-  /**
-   * Function that returns the state of the player.
-   *
-   * @returns true - player's size is big; false - player's size is small
-   */
-  function getIsBig() {
-    return isBig;
-  }
-
   /**
    * Function that changes the size of the player to small.
    */
   function smallify() {
-    isBig = false;
+    this.isBig = false;
 
     this.scale = vec2(1);
   }
@@ -46,14 +34,14 @@ function attributes() {
     const { x, y } = this.pos;
 
     let timer = POWERUP_TIME;
-    isBig = true;
+    this.isBig = true;
 
     this.scale = vec2(2);
 
     this.moveTo(x, y - 1);
 
     onUpdate(() => {
-      if (isBig) {
+      if (this.isBig) {
         timer -= dt();
 
         if (timer <= 0) {
@@ -64,7 +52,6 @@ function attributes() {
   }
 
   return {
-    getIsBig,
     smallify,
     biggify,
   };
@@ -85,6 +72,10 @@ export const addPlayer = (x, y) => {
     pos(position),
     area(), // has a collider
     body(), // responds to physics and gravity
+    {
+      isBig: false, // controls size of the player
+      direction: RIGHT, // controls direction of the player
+    },
     attributes(),
   ]);
 };
@@ -96,6 +87,12 @@ export const addPlayer = (x, y) => {
  */
 export const playerMoveRight = (player) => {
   player.move(MOVING_SPEED, 0);
+
+  if (player.direction === LEFT) {
+    player.flipX(false);
+
+    player.direction = RIGHT;
+  }
 };
 
 /**
@@ -105,6 +102,12 @@ export const playerMoveRight = (player) => {
  */
 export const playerMoveToLeft = (player) => {
   player.move(-MOVING_SPEED, 0);
+
+  if (player.direction === RIGHT) {
+    player.flipX(true);
+
+    player.direction = LEFT;
+  }
 };
 
 /**
@@ -114,7 +117,7 @@ export const playerMoveToLeft = (player) => {
  */
 export const playerJump = (player) => {
   if (player.isGrounded()) {
-    if (!player.getIsBig()) {
+    if (!player.isBig) {
       player.jump(SMALL_JUMP_FORCE);
     } else {
       player.jump(BIG_JUMP_FORCE);
@@ -194,7 +197,11 @@ export const playerCollidesWithCoin = (coin, score) => {
  * and changes player's size to big.
  *
  * @param {GameObj} mushroom - Object of the mushroom
+ * @param {Object} mushrooms - Object that consists of mushrooms
+ * that are currently spawned in
  * @param {GameObj} player - Object of the player
+ * @returns Object that consists of mushrooms that are currently
+ * spawned in
  */
 export const playerCollidesWithMushroom = (mushroom, mushrooms, player) => {
   mushrooms = destroyMushroom(mushroom, mushrooms);
@@ -225,7 +232,7 @@ export const playerCollidesWithMushroom = (mushroom, mushrooms, player) => {
  */
 export const playerCollidesWithEnemy = (enemy, player, score) => {
   if (player.isGrounded()) {
-    if (!player.getIsBig()) {
+    if (!player.isBig) {
       go("gameOver", { score: score.value });
     } else {
       player.smallify();
