@@ -58,6 +58,14 @@ loadSprite("enemy-alt", "evil_mushroom_blue.png");
 loadSprite("coin", "coin.png");
 loadSprite("mushroom", "mushroom.png");
 
+// Constants
+
+const LEVELUI_POSX = 10;
+const LEVELUI_POSY = 10;
+
+const SCOREUI_POSX = 10;
+const SCOREUI_POSY = 25;
+
 // Game Start scene
 
 scene("gameStart", ({ level, score }) => {
@@ -65,7 +73,12 @@ scene("gameStart", ({ level, score }) => {
 
   // Level
 
-  add([text(`level ${level}`), pos(10, 10), scale(0.2), layer("ui")]);
+  const levelUi = add([
+    text(`level ${level}`),
+    pos(LEVELUI_POSX, LEVELUI_POSY),
+    scale(0.2),
+    layer("ui"),
+  ]);
 
   const gameLevel = addLevel(maps[level - 1].level, maps[level - 1].config);
 
@@ -73,7 +86,7 @@ scene("gameStart", ({ level, score }) => {
 
   const scoreUi = add([
     text(`Score: ${score}`),
-    pos(10, 25),
+    pos(SCOREUI_POSX, SCOREUI_POSY),
     scale(0.2),
     layer("ui"),
     {
@@ -105,6 +118,18 @@ scene("gameStart", ({ level, score }) => {
 
   onKeyPress("up", () => {
     playerJump(player);
+  });
+
+  // Level UI and Score UI following player's movements
+
+  onUpdate(() => {
+    const { x, y } = player.pos;
+
+    const levelPosition = vec2(x, y - 160 + LEVELUI_POSY);
+    const scorePosition = vec2(x, y - 160 + SCOREUI_POSY);
+
+    levelUi.pos = levelPosition;
+    scoreUi.pos = scorePosition;
   });
 
   // Mushroom movement

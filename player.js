@@ -188,7 +188,7 @@ export const playerCollidesWithCoin = (coin, score) => {
   destroy(coin);
 
   score.value++;
-  score.text = score.value;
+  score.text = `Score: ${score.value}`;
 };
 
 /**
