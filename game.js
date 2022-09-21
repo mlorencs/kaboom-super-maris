@@ -1,5 +1,6 @@
 import kaboom from "kaboom";
 
+import { createButton } from "./button";
 import { maps } from "./levelConfig";
 
 import {
@@ -199,7 +200,30 @@ scene("gameStart", ({ level, score }) => {
 // Game Over scene
 
 scene("gameOver", ({ score }) => {
-  add([text(score, 32), origin("center"), pos(width() / 2, height() / 2)]);
+  add([
+    text("Game Over", { size: 48 }),
+    origin("center"),
+    pos(width() / 2, height() / 2 - 75),
+  ]);
+
+  add([
+    text(score, { size: 32 }),
+    origin("center"),
+    pos(width() / 2, height() / 2),
+  ]);
+
+  const onTryAgainClick = () => {
+    go("gameStart", { level: 1, score: 0 });
+  };
+
+  createButton({
+    width: 120,
+    height: 40,
+    alignment: "center",
+    position: vec2(width() / 2, height() / 2 + 75),
+    btnText: "Try Again!",
+    onBtnClick: () => onTryAgainClick(),
+  });
 });
 
 // Go to Game Start scene
